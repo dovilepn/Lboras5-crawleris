@@ -1,3 +1,6 @@
+package eu.dovile;
+
+import com.google.gson.Gson;
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
@@ -104,11 +107,15 @@ public class Crawler extends WebCrawler
     }
     private void parseHTML(String url) throws IOException{
 
+
+
         Document doc = Jsoup.connect(url).get();
         String authorName = "";
         String date = "";
+
         /*STRAIPSNIS*/
         //Tema
+        String temma = doc.select("div.category-path a").last().text();
        //Autorius
         Element authorDIV = doc.select("div.author-info").first();
         if (authorDIV!=null){
@@ -121,7 +128,7 @@ public class Crawler extends WebCrawler
         String articalName = h1.substring(0,20)+doc.select("div").attr("data-id");
 
         //Data
-        Element dateMeta = doc.select("meta[itemprop=datePublished]").first();
+        Element dateMeta = doc.select("meta [itemprop=datePublished]").first();
 
         if (dateMeta!=null){
             date = dateMeta.attr("content");
@@ -137,7 +144,7 @@ public class Crawler extends WebCrawler
 
 
         if(h1!=null && articalText!=null){//straipsnis
-            String articleInfo = url+"\n"+"Autorius: "+authorName+"\n"+"Pavadinimas: "+
+            String articleInfo = url+"\nTema: "+temma+"\n"+"Autorius: "+authorName+"\n"+"Pavadinimas: "+
                     h1+"\n"+"Laikas: "+time+"\n"+"Data: "+date+"\n"+"Straipsnio tekstas: "+articalText+"\n";
             writeText(articleInfo,articalName);
         }
@@ -146,11 +153,14 @@ public class Crawler extends WebCrawler
 
         /*KOMENTARAS*/
 
-        List<String[]> comments = new ArrayList<String[]>();
-        Element isComment = doc.select("div.comments-page").first();
+       /* List<String[]> comments = new ArrayList<String[]>();
+        String isComment = doc.select("div#news-comments-page").text();
 
 
         if (isComment!=null){//komentaru puslapis
+
+            Gson gson = new Gson();
+
 
             String articleID = doc.select("div").attr("data-id");
 
@@ -175,6 +185,7 @@ public class Crawler extends WebCrawler
                 comments.add(commentInfo);
 
             }
+
            for (String[] l:comments){
 
                String commentInfo = "";
@@ -197,10 +208,32 @@ public class Crawler extends WebCrawler
 
 
 
+        }*/
+
+        String isComment = doc.select("div#news-comments-page").text();
+
+
+        if (url.contains("?comments")){
+            String comment = null;
+            Elements scripts = doc.select("script");
+            for (Element script :scripts) {
+
+                String commentText = script.text();
+
+                if(commentText.contains("div.comments-placeholder")){
+
+                    comment = commentText;
+
+
+                }
+            }
+
+            Gson gson = new Gson();
+            String json = gson.toJson(comment);
+
+
+
         }
-
-
-
 
 
 
