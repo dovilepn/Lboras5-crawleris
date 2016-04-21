@@ -1,3 +1,5 @@
+package eu.dovile;
+
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
 import edu.uci.ics.crawler4j.crawler.CrawlController;
 import edu.uci.ics.crawler4j.fetcher.PageFetcher;
@@ -11,7 +13,7 @@ public class Controller {
 
         CrawlConfig config = new CrawlConfig();
         config.setCrawlStorageFolder(crawlStorageFolder);
-        config.setMaxPagesToFetch(30);
+        config.setMaxPagesToFetch(5);
 
         /*
          * Instantiate the controller for this crawl.
@@ -29,6 +31,7 @@ public class Controller {
         controller.addSeed("http://www.15min.lt/");
 //        controller.addSeed("http://www.ics.uci.edu/~welling/");
 //        controller.addSeed("http://www.ics.uci.edu/");
+
 
         /*
          * Start the crawl. This is a blocking operation, meaning that your code
